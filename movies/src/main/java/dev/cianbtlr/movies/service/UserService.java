@@ -42,7 +42,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public Optional<User> singleUser(String userId) { return userRepository.findUserById(userId); }
+    public Optional<User> singleUser(String userId) { return userRepository.findUserByUserId(userId); }
 
     public String singUpUser(User user) {
         user.setUserId(UUID.randomUUID().toString());

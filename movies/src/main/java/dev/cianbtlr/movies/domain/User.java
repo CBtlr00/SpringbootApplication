@@ -20,8 +20,10 @@ import java.util.Collections;
 public class User implements UserDetails {
     @Id
     private ObjectId id;
+    @Getter
     private String userId;
     private String firstName;
+    @Getter
     private String lastName;
     private String email;
     private String password;
@@ -51,14 +53,6 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
     }
 
     @Override

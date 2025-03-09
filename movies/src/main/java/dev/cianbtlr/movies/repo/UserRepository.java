@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByEmail(String email);
 
-    Optional<User> findUserById(String userId);
+    Optional<User> findUserByUserId(String userId);
 
     @Transactional
     @Query("{ 'email': ?0 }")

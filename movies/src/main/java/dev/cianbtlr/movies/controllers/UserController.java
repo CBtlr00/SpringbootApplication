@@ -34,6 +34,11 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<Optional<User>> getSingleUser(@PathVariable String userId) {
-        return new ResponseEntity<>(userService.singleUser(userId), HttpStatus.OK);
+        Optional<User> user = userService.singleUser(userId);
+        if (user.isPresent()) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Optional.empty());
+        }
     }
 }
