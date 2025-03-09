@@ -1,13 +1,18 @@
 package dev.cianbtlr.movies.controllers;
 
+import dev.cianbtlr.movies.domain.User;
 import dev.cianbtlr.movies.request.LoginRequest;
 import dev.cianbtlr.movies.service.UserService;
 import lombok.AllArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -18,7 +23,17 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(value = "/login")
-    public String register(@RequestBody LoginRequest request) {
+    public String login(@RequestBody LoginRequest request) {
         return userService.login(request);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        return new ResponseEntity<>(userService.allUsers(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<Optional<User>> getSingleUser(@PathVariable String userId) {
+        return new ResponseEntity<>(userService.singleUser(userId), HttpStatus.OK);
     }
 }

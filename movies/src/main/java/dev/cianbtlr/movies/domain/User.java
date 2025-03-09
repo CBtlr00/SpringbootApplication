@@ -20,6 +20,7 @@ import java.util.Collections;
 public class User implements UserDetails {
     @Id
     private ObjectId id;
+    private String userId;
     private String firstName;
     private String lastName;
     private String email;

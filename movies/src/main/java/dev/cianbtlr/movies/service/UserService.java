@@ -1,14 +1,17 @@
 package dev.cianbtlr.movies.service;
 
 import dev.cianbtlr.movies.domain.User;
-import dev.cianbtlr.movies.domain.UserRole;
 import dev.cianbtlr.movies.domain.token.ConfirmationToken;
 import dev.cianbtlr.movies.repo.UserRepository;
 import dev.cianbtlr.movies.request.LoginRequest;
-import dev.cianbtlr.movies.request.RegistrationRequest;
 import lombok.AllArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,24 +19,33 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
 @Service
 @AllArgsConstructor
 public class UserService implements UserDetailsService {
-    @Autowired
     private UserRepository userRepository;
     private final static String EMAIL_NOT_FOUND = "User with email %s not found!";
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
+    private final AuthenticationConfiguration authenticationConfiguration;
 
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return (UserDetails) userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(EMAIL_NOT_FOUND, email)));
     }
 
+    public List<User> allUsers() {
+        return userRepository.findAll();
+    }
+
+    public Optional<User> singleUser(String userId) { return userRepository.findUserById(userId); }
+
     public String singUpUser(User user) {
+        user.setUserId(UUID.randomUUID().toString());
         boolean userExists = userRepository.findByEmail(user.getEmail())
                 .isPresent();
         if (userExists) {
@@ -64,14 +76,18 @@ public class UserService implements UserDetailsService {
             throw new IllegalStateException("User is not enabled. Please confirm your email.");
         }
 
-        // TODO: Authenticate user
-        //        authenticationManager.authenticate(
-        //                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        //        );
-        // TODO: Generate JWT token and return it
-        return "Login successful";
-    }
+        try {
+            AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (Exception e) {
+            throw new IllegalStateException("Authentication failed!", e);
+        }
 
+        return "Login successful"; // Ideally, return a JWT token
+    }
 
     public int enableUser(String email) {
         return userRepository.enableUser(email);

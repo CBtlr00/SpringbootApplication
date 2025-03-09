@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByEmail(String email);
 
+    Optional<User> findUserById(String userId);
+
     @Transactional
     @Query("{ 'email': ?0 }")
     @Update("{ '$set': { 'enabled': true } }")
