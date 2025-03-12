@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import dev.cianbtlr.movies.security.jwt.JwtService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,6 +33,7 @@ public class UserService implements UserDetailsService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtService jwtService;
 
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return (UserDetails) userRepository.findByEmail(email)
@@ -86,7 +88,7 @@ public class UserService implements UserDetailsService {
             throw new IllegalStateException("Authentication failed!", e);
         }
 
-        return "Login successful"; // Ideally, return a JWT token
+        return jwtService.generateToken(user);
     }
 
     public int enableUser(String email) {
