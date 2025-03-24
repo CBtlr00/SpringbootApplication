@@ -1,5 +1,5 @@
 package dev.cianbtlr.dashboard.domain.enums;
 
-public enum ProjectType {
+public enum ServiceType {
     OAUTH, MTLS;
 }
