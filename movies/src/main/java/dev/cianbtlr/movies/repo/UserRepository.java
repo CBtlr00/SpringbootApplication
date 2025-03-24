@@ -1,6 +1,7 @@
 package dev.cianbtlr.movies.repo;
 
 import dev.cianbtlr.movies.domain.User;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.Update;
@@ -12,6 +13,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByEmail(String email);
+
+    Optional<User> findById(ObjectId id);
 
     Optional<User> findUserByUserId(String userId);
 

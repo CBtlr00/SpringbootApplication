@@ -1,4 +1,4 @@
-package dev.cianbtlr.movies.domain;
+package dev.cianbtlr.movies.domain.enums;
 
 public enum UserRole {
     USER,

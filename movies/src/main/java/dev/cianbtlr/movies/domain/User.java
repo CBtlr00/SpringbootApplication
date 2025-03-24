@@ -1,5 +1,6 @@
 package dev.cianbtlr.movies.domain;
 
+import dev.cianbtlr.movies.domain.enums.UserRole;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;

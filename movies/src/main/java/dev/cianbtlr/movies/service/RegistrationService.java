@@ -1,7 +1,7 @@
 package dev.cianbtlr.movies.service;
 
 import dev.cianbtlr.movies.domain.User;
-import dev.cianbtlr.movies.domain.UserRole;
+import dev.cianbtlr.movies.domain.enums.UserRole;
 import dev.cianbtlr.movies.domain.token.ConfirmationToken;
 import dev.cianbtlr.movies.request.RegistrationRequest;
 import dev.cianbtlr.movies.validator.EmailValidator;
